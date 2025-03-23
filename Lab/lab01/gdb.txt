@@ -4,6 +4,11 @@
 4.
 5.
 6.
-7.
-8.
+
+q7.How do you configure gdb so it displays the value of a variable after every step?
+a7.display <value name>
+
+q8.How do you show a list of all variables and their values in the current function?
+a8.info local
+
 9.
