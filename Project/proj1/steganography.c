@@ -21,16 +21,12 @@
 //Determines what color the cell at the given row/col should be. This should not affect Image, and should allocate space for a new Color.
 Color *evaluateOnePixel(Image *image, int row, int col)
 {	
-	Color* rs_color = (Color*)malloc(sizeof(Color));
-	if(rs_color == NULL){
-		printf("no more memory");
-		return NULL;
-	}
 	Color ** p = image->image;
+	Color * secret = (Color*) malloc(sizeof(Color));
 	p += (col + row * (image->cols));
 	int LSB = ((*p)->B) & 1;
-	rs_color->B = rs_color->G = rs_color->R = LSB * 255;
-	return rs_color;
+	secret->B = secret->G = secret->R = LSB * 255;
+	return secret;
 }
 
 //Given an image, creates a new image extracting the LSB of the B channel.
@@ -41,13 +37,13 @@ Image *steganography(Image *image)
 	new->rows = image->rows;
 	new->image = (Color**)malloc(sizeof(Color*) * (image->rows) * (image->cols));
 	Color** p = new->image; 
-	for(int row = 1;row<=image->rows;row++){
-		for(int col = 1;col<=image->cols;col++){
+	for(int row = 0;row<image->rows;row++){
+		for(int col = 0;col<image->cols;col++){
 			*p = evaluateOnePixel(image,row,col);
 			p++;
 		}
 	}
-	return image;
+	return new;
 }
 
 /*

@@ -1,18 +1,4 @@
-/************************************************************************
-**
-** NAME:        imageloader.c
-**
-** DESCRIPTION: CS61C Fall 2020 Project 1
-**
-** AUTHOR:      Dan Garcia  -  University of California at Berkeley
-**              Copyright (C) Dan Garcia, 2020. All rights reserved.
-**              Justin Yokota - Starter Code
-**				YOUR NAME HERE
-**
-**
-** DATE:        2020-08-15
-**
-**************************************************************************/
+
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -20,12 +6,9 @@
 #include <string.h>
 #include "imageloader.h"
 
-//Opens a .ppm P3 image file, and constructs an Image object. 
-//You may find the function fscanf useful.
-//Make sure that you close the file with fclose before returning.
 Image *readData(char *filename) 
 {
-	FILE *fp = fopen(filename,'r');
+	FILE *fp = fopen(filename,"r");
 	if(fp == NULL){
 		printf("error,no such file %s",filename);
 		return NULL;
@@ -48,13 +31,13 @@ Image *readData(char *filename)
 	int pixels = image->cols * image->rows;
 	image->image = (Color** )malloc(sizeof(Color*) * pixels);
 	if(image->image == NULL){
-		pritnf("no more memory");
+		printf("no more memory");
 		return NULL;
 	}
 	for(int i =0;i<pixels;i++){
 		*(image->image + i) = (Color*)malloc(sizeof(Color));
 		if(*(image->image + i) == NULL){
-			pritnf("no more memory");
+			printf("no more memory");
 		return NULL;
 		}
 		fscanf(fp,"%hhu %hhu %hhu",&(*(image->image + i))->R,&(*(image->image + i))->G,&(*(image->image + i))->B);
@@ -64,24 +47,27 @@ Image *readData(char *filename)
 	return image;
 }
 
-//Given an image, prints to stdout (e.g. with printf) a .ppm P3 file with the image's data.
+
 void writeData(Image *image)
 {
-	printf("P3\n");
-	printf("%u %u\n255",image->cols,image->rows);
-	Color **img = image->image;
-	for(int i=0;i<image->cols*image->rows;i++){
-		Color* color = *(img+i);
-		printf("%3hhd%3hhd%3hhd",color->R,color->G,color->B);
+	printf("P3\n%d %d\n255\n", image->cols, image->rows);
+	Color** p = image->image;
+	for (int i = 0; i < image->rows; i++) {
+		for (int j = 0; j < image->cols - 1; j++) {
+			printf("%3hhu %3hhu %3hhu   ", (*p)->R, (*p)->G, (*p)->B);
+			p++;
+		}
+		printf("%3hhu %3hhu %3hhu\n", (*p)->R, (*p)->G, (*p)->B);
+		p++;
 	}
 }
 
-//Frees an image
+
 void freeImage(Image *image)
 {
 	int totpixels = image->rows * image->cols;
 	for(int i=0;i<totpixels;i++){
-		free(*(image->image+i));
+		free(*(image->image + i));
 	}
 	free(image->image);
 	free(image);
